@@ -1,0 +1,15 @@
+docker build -f web_server.Dockerfile -t webserver_image .   # build image from specific Dockerfile
+docker create --name webserver_container webserver_image     # build container from image
+
+
+docker start webserver_container                             # start container
+docker stop webserver_container
+
+#View images
+docker image         # images
+docker ps            # shows only running containers
+docker ps -a         # shows all containers (running + stopped)
+
+# Delete
+docker rm webserver_container
+docker rmi webserver_image  # delete container and image
