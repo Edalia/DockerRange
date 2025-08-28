@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  host1:
+    build:
+      context: ../Dockerfiles/scene1/host1
+      dockerfile: Dockerfile
+    container_name: host1
+    networks:
+      external:
+        ipv4_address: 172.21.0.4
+
+  host2:
+    build:
+      context: ../Dockerfiles/scene1/host2
+      dockerfile: Dockerfile
+    container_name: host2
+    networks:
+      external:
+        ipv4_address: 172.21.0.5
+
+  analyzer:
+    build:
+      context: ../Dockerfiles/analyzer
+      dockerfile: Dockerfile
+    container_name: analyzer
+    networks:
+      internal:
+        ipv4_address: 172.21.0.5
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.100.0/24
+          gateway: 192.168.100.1
+
+  external:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
