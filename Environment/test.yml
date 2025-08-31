@@ -1,0 +1,46 @@
+services:
+  host1:
+    build:
+      context: ../Dockerfiles/scene1/host1
+      dockerfile: Dockerfile
+    container_name: host1
+    networks:
+      public:
+        ipv4_address: 172.21.0.4
+
+  host2:
+    build:
+      context: ../Dockerfiles/scene1/host2
+      dockerfile: Dockerfile
+    container_name: host2
+    networks:
+      public:
+        ipv4_address: 172.21.0.5
+
+  scanner:
+    build:
+      context: ../Dockerfiles/analyzer
+      dockerfile: Dockerfile
+    container_name: scanner
+    networks:
+      private:
+        ipv4_address: 192.168.100.5
+      public:
+        ipv4_address: 172.21.0.2
+
+networks:
+  private:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.100.0/24
+          gateway: 192.168.100.1
+
+  public:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1

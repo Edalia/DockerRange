@@ -5,6 +5,9 @@ docker create --name webserver_container webserver_image     # build container f
 docker start webserver_container                             # start container
 docker stop webserver_container
 
+sudo docker exec -it analyzer bash
+
+
 #View images
 docker image         # images
 docker ps            # shows only running containers
@@ -13,3 +16,5 @@ docker ps -a         # shows all containers (running + stopped)
 # Delete
 docker rm webserver_container
 docker rmi webserver_image  # delete container and image
+
+docker compose template.yml down

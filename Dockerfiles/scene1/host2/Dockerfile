@@ -1,14 +1,14 @@
-# Older base; leave packages behind on purpose
-FROM ubuntu:18.04
+FROM ubuntu:24.04 
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive 
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends vsftpd && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends vsftpd bash && rm -rf /var/lib/apt/lists/* 
 
-# Insecure config: anonymous enabled, sandbox off
-COPY vsftpd.conf /etc/vsftpd.conf
+COPY vsftpd.conf /etc/vsftpd.conf 
 
-EXPOSE 21
-CMD ["/usr/sbin/vsftpd", "/etc/vsftpd.conf"]
+EXPOSE 21 
+
+RUN apt-get update && apt-get install -y iputils-ping bash
+
+# Keep container running by default
+CMD ["tail", "-f", "/dev/null"]

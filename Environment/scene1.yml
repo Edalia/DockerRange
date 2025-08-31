@@ -1,35 +1,42 @@
-version: "3.9"
-
 services:
   host1:
-    build:
-      context: ../Dockerfiles/scene1/host1
-      dockerfile: Dockerfile
+    image: vulnerables/web-dvwa:latest
     container_name: host1
     networks:
-      external:
-        ipv4_address: 172.21.0.4
+      public:
+        ipv4_address: 172.21.0.10
 
   host2:
-    build:
-      context: ../Dockerfiles/scene1/host2
-      dockerfile: Dockerfile
+    image: tleemcjr/metasploitable2:latest
     container_name: host2
+    command: /bin/bash -c "service ssh start && service apache2 start && tail -f /dev/null"
     networks:
-      external:
-        ipv4_address: 172.21.0.5
+      public:
+        ipv4_address: 172.21.0.11
 
-  analyzer:
-    build:
-      context: ../Dockerfiles/analyzer
-      dockerfile: Dockerfile
-    container_name: analyzer
+  host3:
+    image: ubuntu
+    container_name: host3
+    command: tail -f /dev/null
     networks:
-      internal:
-        ipv4_address: 172.21.0.5
+      public:
+        ipv4_address: 172.21.0.12
+
+  scanner:
+    container_name: scanner
+    build:
+      context: ../Dockerfiles/scanner
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      public:
+        ipv4_address: 172.21.0.20
+      private:
+        ipv4_address: 192.168.100.10
 
 networks:
-  internal:
+  private:
     driver: bridge
     ipam:
       driver: default
@@ -37,7 +44,7 @@ networks:
         - subnet: 192.168.100.0/24
           gateway: 192.168.100.1
 
-  external:
+  public:
     driver: bridge
     ipam:
       driver: default
