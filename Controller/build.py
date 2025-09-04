@@ -1,21 +1,5 @@
-import sys
 import subprocess
-
-# Helper functions
-# Checks if template provided is valid
-def get_yaml():
-    if len(sys.argv) == 2:
-        # Gets the file path from the argument
-        path = sys.argv[1]
-        
-        if(path.endswith(".yaml") or path.endswith(".yml")):
-           return path
-        else:
-            print("[X] Expecting a .yaml>/ .yml file")
-            sys.exit(1)
-    else:
-        print("[X] Usage: python3 build.py <file.yaml>/ <file.yml>")
-        sys.exit(1)
+from common import get_yaml
 
 # Builds container
 def build_template():

@@ -3,6 +3,7 @@ import sys
 import subprocess
 import os
 from pathlib import Path
+from common import get_file
 
 def tear_senario():
     path = get_yaml()
@@ -23,7 +24,8 @@ def tear_senario():
     # Delay while drop process continues
     tear_process.wait()
 
-    files = get_file()
+    # Retrieve json results files associated with this template (yml file)
+    files = get_file(path)
     
     if files is None:
         print("[✓] The environment was torn down successfully, no results file to remove")
@@ -37,21 +39,6 @@ def tear_senario():
         print("[✓] The environment was torn down successfully")
     else:
         print("[X] Could not tear down the template") 
-
-
-# Retrieve json results file associated with this template (yml file)
-def get_file():
-    path = get_yaml()
-
-    filename = os.path.basename(path)
-
-    files = []
-
-    for f in os.listdir("./Results"):
-        if filename in f:
-            files.append(f)
-    
-    return files
 
 if __name__ == "__main__":
     tear_senario()

@@ -5,49 +5,50 @@ import re
 import sys
 import os
 import json
-from build import get_yaml
+from common import get_yaml, save_to_file
 
-def scan_os():
-    # Get path of yml file (from build.py)
-    path = get_yaml()
 
-    try:
-        # Open yml filr and get host data
-        with open(path, "r") as f:
-            data = yaml.safe_load(f)
+# def scan_os():
+#     # Get path of yml file (from build.py)
+#     path = get_yaml()
 
-        host_name = []
+#     try:
+#         # Open yml filr and get host data
+#         with open(path, "r") as f:
+#             data = yaml.safe_load(f)
 
-        for service in data['services']:
-            try:
-                scan_host = subprocess.run(
-                    ["docker","exec","-it","scanner","nmap","-O",service], 
-                    capture_output=True, # capture scan results (stdout)
-                    text=True # get results as string
-                )
+#         host_name = []
 
-                if(scan_host.returncode==0):
+#         for service in data['services']:
+#             try:
+#                 scan_host = subprocess.run(
+#                     ["docker","exec","-it","scanner","nmap","-O",service], 
+#                     capture_output=True, # capture scan results (stdout)
+#                     text=True # get results as string
+#                 )
+
+#                 if(scan_host.returncode==0):
                     
-                    # Get output of scan
-                    output = scan_host.stdout
+#                     # Get output of scan
+#                     output = scan_host.stdout
 
-                    os_search = re.search(r"OS details:\s*(.*)", output)
+#                     os_search = re.search(r"OS details:\s*(.*)", output)
 
-                    if os_search is None:
-                        print(f"OS information not found for {service}")
-                    else:
-                        os = os_search.group(1)
-                        print(f"[✓]{service} contains the Operating system: {os}")
+#                     if os_search is None:
+#                         print(f"OS information not found for {service}")
+#                     else:
+#                         os = os_search.group(1)
+#                         print(f"[✓]{service} contains the Operating system: {os}")
 
-                else:
-                    print("[X] OS scanner process had an error")
-            except:
-                print("Unexpected error:", sys.exc_info())
+#                 else:
+#                     print("[X] OS scanner process had an error")
+#             except:
+#                 print("Unexpected error:", sys.exc_info())
 
-    except Exception as e:
-        print(f"Error opening YAML file: {e}")
+#     except Exception as e:
+#         print(f"Error opening YAML file: {e}")
 
-def scan_services():
+def scan_ports():
     path = get_yaml()
 
     try:
@@ -57,31 +58,36 @@ def scan_services():
 
         host_name = []
 
+        # Get file name of template file - Used in naming results file of a scanned image
+        filename = os.path.basename(path)
+
+        
+
         for service in data['services']:
-            try:
-                scan_apps = subprocess.run(
-                    ["docker","exec","-it","scanner","nmap","-sV",service], 
-                    capture_output=True, # capture scan results (stdout)
-                    text=True # get results as string
-                )
+            if "scanner" not in service:
 
-                if(scan_apps.returncode==0):
-                    output = scan_apps.stdout
+                # Define path where results of the port scan will be stored
+                json_path = os.path.join("./Results/", f"{filename}_{service}.json")
 
-                    # Capture "PORT STATE SERVICE VERSION"
-                    matches = re.findall(r"(\d+/tcp)\s+open\s+(\S+)\s+(.*)", output)
+                try:
+                    scan_ports = subprocess.run(
+                        ["sudo", "docker", "exec", "scanner", "nmap", "-sV", "-oJ", "-", service],
+                        capture_output=True, # capture scan results (stdout)
+                        text=True # get results as string
+                    )
 
-                    if not matches: # if the output is empty
-                        print(f"[X] No identifiable services found on {service}")
+                    if(scan_ports.returncode==0):
+                        scan_output = json.loads(scan_ports.stdout)
+
+                        # Write to results.json file of container
+                        save_to_file(json_path, scan_output,"w")
+                        
+                        print(f"[✓] {service}'s ports were scanned successfully")
+
                     else:
-                        print(f"[✓]{service} running the applications:")
-                        for match in matches:
-                            port, svc, version = match
-                            print(f"[-]{version}, at Port: {port}")
-                else:
-                    print("[X] Could not return the result")
-            except:
-                print("[X] Unexpected error scanning hosts:", sys.exc_info())
+                        print("[X] The port scan was unsuccessful")
+                except:
+                    print("[X] Unexpected error :", sys.exc_info())
     except:
         print("[X] Unexpected error parsing template file:", sys.exc_info())
 
@@ -106,67 +112,61 @@ def trivy_scan():
             data = yaml.safe_load(f)
 
         for service in data['services']:
+            if "scanner" not in service:
+                # Get Docker image which will be scanned by Trivy
+                image = get_image(service)
 
-            # Get Docker image which will be scanned by Trivy
-            image = get_image(service)
+                if not image:
+                    print(f"[X] No image defined for service: {service}")
+                    print(f"Exiting...")
+                    sys.exit(1)
+                else:
+                    
+                    # Get file name of template file - Used in naming results file of a scanned image
+                    filename = os.path.basename(path)
 
-            if not image:
-                print(f"[!] No image defined for service: {service}")
-                print(f"Exiting...")
-                sys.exit(1)
-            else:
-                
-                # Get file name of template file - Used in naming results file of a scanned image
-                filename = os.path.basename(path)
+                    # Define path where results of the Trivy scan will be stored
+                    json_path = os.path.join("./Results/", f"{filename}_{service}.json")
+                    
+                    try:
+                        print(f"Scanning {service}'s file system for vulnerabilities...")
 
-                # Define path where results of the Trivy scan will be stored
-                json_path = os.path.join("./Results/", f"{filename}_{service}.json")
-            
-                try:
-                    scan_host = subprocess.run(
-                        ["trivy", "image", "-f", "json", image],
-                        capture_output=True,
-                        text=True
-                    )
+                        scan_host = subprocess.run(
+                            ["trivy", "image", "-f", "json", image],
+                            capture_output=True,
+                            text=True
+                        )
 
-                    if scan_host.returncode == 0:
-                        
-                        # Parse Trivy output stored in json format
-                        scan_output = json.loads(scan_host.stdout)
+                        if scan_host.returncode == 0:
+                            
+                            # Parse Trivy output stored in json format
+                            scan_output = json.loads(scan_host.stdout)
 
-                        # List that stores filtered results. Saved for analysis
-                        filtered_results = []
-                        
-                        # Get vulnerability info from parsed Trivy output
-                        for result in scan_output.get("Results", []):
-                            for vuln in result.get("Vulnerabilities", []):
-                                filtered_results.append(# add CVE and severity to filtered results list
-                                    {
-                                    "Target": result.get("Target"),
-                                    "CVE": vuln.get("VulnerabilityID"),
-                                    "Severity": vuln.get("Severity")
-                                    }
-                                )
+                            # List that stores filtered results. Saved for analysis
+                            filtered_results = []
+                            
+                            # Get vulnerability info from parsed Trivy output
+                            for result in scan_output.get("Results", []):
+                                for vuln in result.get("Vulnerabilities", []):
+                                    filtered_results.append(# add CVE and severity to filtered results list
+                                        {
+                                        "Target": result.get("Target"),
+                                        "CVE": vuln.get("VulnerabilityID"),
+                                        "Severity": vuln.get("Severity")
+                                        }
+                                    )
 
-                        # Write to results.json file of container
-                        save_to_file(json_path, filtered_results)
-                        
-                    else:
-                        print(f"[X] Error scanning {service} ({image}): {scan_host.stderr}")
+                            # Write to results.json file of container
+                            save_to_file(json_path, filtered_results,"w")
+                            
+                        else:
+                            print(f"[X] Error scanning {service} ({image}): {scan_host.stderr}")
 
-                except Exception as e:
-                    print("Unexpected error:", sys.exc_info())
+                    except Exception as e:
+                        print("Unexpected error:", sys.exc_info())
 
     except Exception as e:
         print(f"Error opening YAML file: {e}")
 
-def save_to_file(filename, content):
-    try:
-        with open(filename, "w") as f:
-            json.dump(content, f, indent=2)
-        print(f"[✓] Output written to {filename}")
-    except Exception as e:
-        print(f"[X] Error writing to file {filename}: {e}")
-
 if __name__ == "__main__":
-    trivy_scan()
+    scan_ports()

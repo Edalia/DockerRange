@@ -22,8 +22,6 @@ services:
     build:
       context: ../Dockerfiles/scanner
       dockerfile: Dockerfile
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       public:
         ipv4_address: 172.21.0.20
