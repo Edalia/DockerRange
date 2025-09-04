@@ -1,11 +1,7 @@
 {
-	"Policy": {
-		"max_high_risk_ports": 0,
-		"max_high_risk_ports_comment": "No dangerous ports (23, 135, 445)",
-		"required_encryption": true,
-		"required_encryption_comment": "HTTPS instead of HTTP",
-		"max_outdated_services": 1,
-		"max_outdated_services_comment": "Allow 1 outdated service",
-		"forbidden_services": ["telnet", "ftp", "rsh"]
-	}
+	"max_critical_CVE": 0,
+	"max_high_CVE": 0,
+	"max_medium_CVE": 0,
+	"max_low_CVE": 7,
+	"disallowed_ports": [80, 21, 23, 25]
 }

@@ -18,15 +18,17 @@ services:
         ipv4_address: 172.21.0.5
 
   scanner:
-    build:
-      context: ../Dockerfiles/analyzer
-      dockerfile: Dockerfile
     container_name: scanner
+    build:
+      context: ../Dockerfiles/scanner
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      private:
-        ipv4_address: 192.168.100.5
       public:
-        ipv4_address: 172.21.0.2
+        ipv4_address: 172.21.0.20
+      private:
+        ipv4_address: 192.168.100.10
 
 networks:
   private:

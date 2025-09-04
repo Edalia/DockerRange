@@ -3,7 +3,7 @@ services:
     image: vulnerables/web-dvwa:latest
     container_name: host1
     networks:
-      public:
+      untrusted:
         ipv4_address: 172.21.0.10
 
   host2:
@@ -11,32 +11,35 @@ services:
     container_name: host2
     command: /bin/bash -c "service ssh start && service apache2 start && tail -f /dev/null"
     networks:
-      public:
+      untrusted:
         ipv4_address: 172.21.0.11
 
   host3:
-    image: ubuntu
+    image: ubuntu:jammy
     container_name: host3
     command: tail -f /dev/null
     networks:
-      public:
+      untrusted:
         ipv4_address: 172.21.0.12
 
-  scanner:
-    container_name: scanner
-    build:
-      context: ../Dockerfiles/scanner
-      dockerfile: Dockerfile
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+  host4:
+    image: kalilinux/kali-rolling
+    container_name: host4
+    command: tail -f /dev/null
     networks:
-      public:
-        ipv4_address: 172.21.0.20
-      private:
-        ipv4_address: 192.168.100.10
+      untrusted:
+        ipv4_address: 172.21.0.13
+
+  host5:
+    image: ubuntu:latest
+    container_name: host5
+    command: tail -f /dev/null
+    networks:
+      untrusted:
+        ipv4_address: 172.21.0.14
 
 networks:
-  private:
+  trusted:
     driver: bridge
     ipam:
       driver: default
@@ -44,7 +47,7 @@ networks:
         - subnet: 192.168.100.0/24
           gateway: 192.168.100.1
 
-  public:
+  untrusted:
     driver: bridge
     ipam:
       driver: default

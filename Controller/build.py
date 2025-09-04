@@ -25,7 +25,7 @@ def build_template():
 
         # Build containers /network connections specified by yml file
         build_process = subprocess.Popen(
-            ["docker", "compose", "-f", path, "up", "-d", "--build"], 
+            ["docker", "compose", "-f", path, "up", "-d", "--build","--remove-orphans"], 
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True
