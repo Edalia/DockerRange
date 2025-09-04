@@ -1,5 +1,6 @@
 import json
 import yaml
+import time
 from common import *
 
 def read_policy():
@@ -67,21 +68,27 @@ def get_compliant_hosts():
 
 
 def enforce():
+
     hosts = get_compliant_hosts()
+    
+    print(f"[!] Retrieving compliant devices...")
+    
+    time.sleep(2)
+
     try:
 
         for host_name in hosts:
-
+            print(f"[...] Modifying devices network settings...")
             disconnect_untrusted = subprocess.run(
-                                ["docker", "network", "disconnect", "untrusted", host_name],
+                                ["sudo", "docker", "network", "disconnect", "environment_untrusted", host_name],
                                 capture_output=True,
                                 text=True
                             )
-
+            time.sleep(2)
             if(disconnect_untrusted.returncode == 0):
-                
+                print(f"[...] Finalising...")
                 connect_trusted = subprocess.run(
-                                    ["docker", "network", "connect", "trusted", host_name],
+                                    ["sudo", "docker", "network", "connect", "environment_trusted", host_name],
                                     capture_output=True,
                                     text=True
                                 )
