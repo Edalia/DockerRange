@@ -1,0 +1,77 @@
+[
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2016-2781",
+    "Severity": "LOW"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2022-3219",
+    "Severity": "LOW"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-2236",
+    "Severity": "LOW"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10041",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10963",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10041",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10963",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10041",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10963",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10041",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-10963",
+    "Severity": "MEDIUM"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-41996",
+    "Severity": "LOW"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-56433",
+    "Severity": "LOW"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2024-56433",
+    "Severity": "LOW"
+  },
+  {
+    "Target": "ubuntu:latest (ubuntu 24.04)",
+    "CVE": "CVE-2025-45582",
+    "Severity": "MEDIUM"
+  }
+]

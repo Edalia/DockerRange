@@ -1,0 +1,13 @@
+2025-09-04 19:45:00:  Environment/scene1.yml environment was created successfully.
+2025-09-04 19:46:00:  host1 environment was scanned and stored in ./Results/scene1.yml_host1.json
+2025-09-04 19:46:01:  host2 environment was scanned and stored in ./Results/scene1.yml_host2.json
+2025-09-04 19:46:01:  host3 environment was scanned and stored in ./Results/scene1.yml_host3.json
+2025-09-04 19:46:16:  host4 environment was scanned and stored in ./Results/scene1.yml_host4.json
+2025-09-04 19:46:16:  host5 environment was scanned and stored in ./Results/scene1.yml_host5.json
+2025-09-04 19:47:13:  host1 environment from Environment/scene1.yml was scanned and stored in ./Results/scene1.yml_host1.json
+2025-09-04 19:47:13:  host2 environment from Environment/scene1.yml was scanned and stored in ./Results/scene1.yml_host2.json
+2025-09-04 19:47:14:  host3 environment from Environment/scene1.yml was scanned and stored in ./Results/scene1.yml_host3.json
+2025-09-04 19:47:24:  host4 environment from Environment/scene1.yml was scanned and stored in ./Results/scene1.yml_host4.json
+2025-09-04 19:47:25:  host5 environment from Environment/scene1.yml was scanned and stored in ./Results/scene1.yml_host5.json
+2025-09-04 21:07:02:  host2 complies with the security policy
+2025-09-04 21:07:02:  host4 complies with the security policy

@@ -1,5 +1,5 @@
 import subprocess
-from common import get_yaml
+from common import *
 
 # Builds container
 def build_template():
@@ -23,6 +23,7 @@ def build_template():
 
         if(build_process.returncode == 0):
             print("[✓] The environment was created successfully")
+            log_event(f"{path} environment was created successfully.")
         else:
            print("[X] Could not build the template") 
 

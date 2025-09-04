@@ -3,7 +3,7 @@ import sys
 import subprocess
 import os
 from pathlib import Path
-from common import get_file
+from common import *
 
 def tear_senario():
     path = get_yaml()
@@ -37,6 +37,7 @@ def tear_senario():
              os.remove(file_path)
 
         print("[✓] The environment was torn down successfully")
+        log_event(f"{path} environment was torn down successfully")
     else:
         print("[X] Could not tear down the template") 
 

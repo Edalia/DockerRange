@@ -5,8 +5,7 @@ import re
 import sys
 import os
 import json
-from common import get_yaml, save_to_file
-
+from common import *
 
 # def scan_os():
 #     # Get path of yml file (from build.py)
@@ -71,16 +70,17 @@ def scan_ports():
 
                 try:
                     scan_ports = subprocess.run(
-                        ["sudo", "docker", "exec", "scanner", "nmap", "-sV", "-oJ", "-", service],
+                        ["sudo", "docker", "exec", "-i","scanner","nmap","-oJ", json_path, service],
                         capture_output=True, # capture scan results (stdout)
                         text=True # get results as string
                     )
 
                     if(scan_ports.returncode==0):
-                        scan_output = json.loads(scan_ports.stdout)
+                        # scan_output = json.loads(scan_ports.stdout)
 
-                        # Write to results.json file of container
-                        save_to_file(json_path, scan_output,"w")
+                        # print(scan_ports.stdout)
+                        # # Write to results.json file of container
+                        # save_to_file(json_path, scan_output,"w")
                         
                         print(f"[✓] {service}'s ports were scanned successfully")
 
@@ -156,6 +156,7 @@ def trivy_scan():
                                         }
                                     )
 
+                            log_event(f"[✓] {service} environment from {path} was scanned and its result was stored in {json_path}")
                             # Write to results.json file of container
                             save_to_file(json_path, filtered_results,"w")
                             
@@ -163,10 +164,10 @@ def trivy_scan():
                             print(f"[X] Error scanning {service} ({image}): {scan_host.stderr}")
 
                     except Exception as e:
-                        print("Unexpected error:", sys.exc_info())
+                        print("[X] Unexpected error:", sys.exc_info())
 
     except Exception as e:
         print(f"Error opening YAML file: {e}")
 
 if __name__ == "__main__":
-    scan_ports()
+    trivy_scan()
