@@ -38,14 +38,11 @@ services:
       untrusted:
         ipv4_address: 172.21.0.14
 
-  scanner:
-    container_name: scanner
-    build:
-      context: ../Dockerfiles/scanner
-      dockerfile: Dockerfile
+  host6:
+    image: ubuntu:latest
+    container_name: host6
+    command: tail -f /dev/null
     networks:
-      untrusted:
-        ipv4_address: 172.21.0.20
       trusted:
         ipv4_address: 192.168.100.2
 
